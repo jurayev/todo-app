@@ -1,0 +1,56 @@
+<!-- View -->
+<html>
+    <head>
+        <title>Todo App</title>
+        <style>
+            .hidden {
+                display: none;
+            }
+            ul {
+                list-style: none;
+                padding: 1rem;
+                margin: 0;
+                width: 300px;
+            }
+            form {
+                padding: 1rem;
+                margin: 0;
+            }
+            li {
+                margin-top: 0.5rem;
+                clear: none;
+            }
+            li button {
+                -webkit-appearance: none;
+                border: none;
+                outline: none;
+                color: red;
+                float: right;
+                background-color: white;
+                cursor: pointer;
+                font-size: 20px;
+            }
+            .check {
+                margin-bottom: 0px;
+                margin-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <form id="form">
+            <input type="text" name="description" id="description"/>
+            <input type="submit" value="Add todo action"/>
+        </form>
+        <div id="error" class="hidden">Oops, something went wrong!</div>
+        <ul id="todos">
+            {% for d in data %}
+            <li id="{{ d.id }}">
+                <input class="check" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked {% endif %}/>
+                {{- d.description -}}
+                <button id="delete" data-id="{{ d.id }}">&cross;</button>
+            </li>
+            {% endfor %}
+        </ul>
+        <script src="{{url_for('static', filename='index.js')}}"></script>
+    </body>
+</html>
