@@ -34,23 +34,69 @@
                 margin-bottom: 0px;
                 margin-right: 10px;
             }
+            .wrapper {
+                display: flex;
+            }
+            .lists_wrapper {
+                flex: 0 0 65%;
+            } 
+            .todos_wrapper {
+                flex: 1;
+            }
+            h4 {
+                margin-left: 16px;
+            }
+            .lists {
+                margin-top: 60px;
+            }
         </style>
     </head>
     <body>
-        <form id="form">
-            <input type="text" name="description" id="description"/>
-            <input type="submit" value="Add todo action"/>
-        </form>
-        <div id="error" class="hidden">Oops, something went wrong!</div>
-        <ul id="todos">
-            {% for d in data %}
-            <li id="{{ d.id }}">
-                <input class="check" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked {% endif %}/>
-                {{- d.description -}}
-                <button id="delete" data-id="{{ d.id }}">&cross;</button>
-            </li>
-            {% endfor %}
-        </ul>
+        <h1>MY TODO BOARD</h1>
+        <div class="wrapper">
+            <div class="lists-wrapper">
+                <h4>TODO CATEGORY</h4>
+                <form id="lists-form">
+                    <input type="text" name="list-description" id="list-description"/>
+                    <input type="submit" value="Create category"/>
+                </form>
+                <div id="error" class="hidden">Oops, something went wrong!</div>
+                <h4>Categories: {{count_lists}}</h4>
+                <ul id="lists">
+                    {% for list in lists %}
+                    <li id="{{ list.id }}">
+                        <input class="check" data-id="{{ list.id }}" type="checkbox" onchange="completeList(event)" {% if list.completed %} checked {% endif %}/>
+                        <a href="/lists/{{ list.id }}">{{- list.name -}}</a>
+                        <button id="list-delete" data-id="{{ list.id }}" onclick="deleteList(event)">&cross;</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="todos-wrapper">
+                <h4>TODO ACTIONS</h4>
+                <form id="todos-form">
+                    <input type="text" name="todos-description" id="todos-description"/>
+                    <input type="submit" value="Create todo"/>
+                </form>
+                <h4> {% if active_list.name %} 
+                        Selected category: {{ active_list.name }} 
+                     {% else %} 
+                        Add your first todo!!! 
+                     {% endif %}
+                </h4>
+                <div id="error" class="hidden">Oops, something went wrong!</div>
+                <ul id="todos">
+                    {% for todo in todos %}
+                    <li id="{{ todo.id }}">
+                        <input class="check" data-id="{{ todo.id }}" type="checkbox" onchange="completeTodo(event)" {% if todo.completed %} checked {% endif %}/>
+                        {{- todo.description -}}
+                        <button id="todo-delete" data-id="{{ todo.id }}" onclick="deleteTodo(event)">&cross;</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
         <script src="{{url_for('static', filename='index.js')}}"></script>
     </body>
 </html>
