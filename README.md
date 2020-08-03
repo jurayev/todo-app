@@ -1,5 +1,5 @@
 # TODO APP
-Full-Stack TODO application. Add your todo task, save as a specific category, and enjoy. Built with Python3+, Flask, SQAlchemy, PostgresSQL, MVC, React
+Full-Stack TODO application. Add your todo task, save as a specific category, and enjoy. Built with Python3+, Flask, SQAlchemy, PostgresSQL, MVC, Bootstrap
 
 ## Run application
 `$ pip3 install -r requirements.txt`
