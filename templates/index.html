@@ -1,102 +1,137 @@
 <!-- View -->
 <html>
     <head>
-        <title>Todo App</title>
+        <title>TODO BOARD</title>
+        <!-- CSS only -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"/>
         <style>
-            .hidden {
-                display: none;
-            }
-            ul {
-                list-style: none;
-                padding: 1rem;
-                margin: 0;
-                width: 300px;
-            }
-            form {
-                padding: 1rem;
-                margin: 0;
-            }
-            li {
-                margin-top: 0.5rem;
-                clear: none;
-            }
-            li button {
+            li button span {
                 -webkit-appearance: none;
                 border: none;
                 outline: none;
                 color: red;
                 float: right;
-                background-color: white;
+                background-color: transparent;
                 cursor: pointer;
-                font-size: 20px;
+                font-size: 25px;
             }
-            .check {
-                margin-bottom: 0px;
-                margin-right: 10px;
+            li a.hover_blue:hover {
+                color: blue !important;
             }
-            .wrapper {
-                display: flex;
-            }
-            .lists_wrapper {
-                flex: 0 0 65%;
-            } 
-            .todos_wrapper {
-                flex: 1;
-            }
-            h4 {
-                margin-left: 16px;
-            }
-            .lists {
-                margin-top: 60px;
+            a.link-icon-danger {
+                color: #ffc107;
             }
         </style>
     </head>
-    <body>
-        <h1>MY TODO BOARD</h1>
-        <div class="wrapper">
-            <div class="lists-wrapper">
+    <body class="bg-dark">
+        <h1 class="text-center text-warning mt-5 mb-5">MY TODO BOARD</h1>
+        <div class="d-flex h-75 justify-content-center overflow-auto bg-warning">
+            <div class="container mt-4 mb-4">
                 <h4>TODO CATEGORY</h4>
                 <form id="lists-form">
-                    <input type="text" name="list-description" id="list-description"/>
-                    <input type="submit" value="Create category"/>
+                    <div class="form-row align-items-center">
+                      <div class="col-md-10">
+                        <input type="text" class="form-control mb-2 mt-2" id="list-description" placeholder="Enter category">
+                      </div>
+                      <div class="col-auto">
+                        <button type="submit" class="btn btn-secondary mb-2 mt-2 bt-2">Create</button>
+                      </div>
+                    </div>
                 </form>
-                <div id="error" class="hidden">Oops, something went wrong!</div>
-                <h4>Categories: {{count_lists}}</h4>
-                <ul id="lists">
+                <p1 class="h4">
+                    <span class="badge badge-dark">
+                        Categories: <span class="badge badge-warning badge">{{count_lists}}</span>
+                    </span>
+                </p1>
+                <div class="list-group list-group-flush mt-4" id="lists">
                     {% for list in lists %}
-                    <li id="{{ list.id }}">
-                        <input class="check" data-id="{{ list.id }}" type="checkbox" onchange="completeList(event)" {% if list.completed %} checked {% endif %}/>
-                        <a href="/lists/{{ list.id }}">{{- list.name -}}</a>
-                        <button id="list-delete" data-id="{{ list.id }}" onclick="deleteList(event)">&cross;</button>
+                    <li class="list-group-item bg-transparent" id="{{ list.id }}">
+                        <input class="mr-2" data-id="{{ list.id }}" type="checkbox" onchange="completeList(event)" {% if list.completed %} checked {% endif %}/>
+                        <a class="text-dark text-decoration-none hover_blue" href="/lists/{{ list.id }}">{{- list.name -}}</a>
+                        <button type="button" class="close text-red" aria-label="Close" id="list-delete" data-id="{{ list.id }}" onclick="deleteList(event)">
+                            <span aria-hidden="true">&cross;</span>
+                        </button>
                     </li>
                     {% endfor %}
-                </ul>
+                </div>
             </div>
-            <div class="todos-wrapper">
+            <div class="container mt-4 mb-4">
                 <h4>TODO ACTIONS</h4>
                 <form id="todos-form">
-                    <input type="text" name="todos-description" id="todos-description"/>
-                    <input type="submit" value="Create todo"/>
+                    <div class="form-row align-items-center">
+                      <div class="col-md-10">
+                        <input type="text" class="form-control mb-2 mt-2" id="todos-description" placeholder="Enter TODO">
+                      </div>
+                      <div class="col-auto">
+                        <button type="submit" class="btn btn-secondary mb-2 mt-2 bt-2">Create</button>
+                      </div>
+                    </div>
                 </form>
-                <h4> {% if active_list.name %} 
-                        Selected category: {{ active_list.name }} 
-                     {% else %} 
+                <p1 class="h4">
+                    <span class="badge badge-dark">
+                        {% if active_list.name %} 
+                        Selected category: <span class="badge badge-warning badge">{{ active_list.name }}</span>
+                        {% else %} 
                         Add your first todo!!! 
-                     {% endif %}
-                </h4>
-                <div id="error" class="hidden">Oops, something went wrong!</div>
-                <ul id="todos">
+                        {% endif %}
+                    </span>
+                </p1>
+                <div class="list-group list-group-flush mt-4" id="todos">
                     {% for todo in todos %}
-                    <li id="{{ todo.id }}">
-                        <input class="check" data-id="{{ todo.id }}" type="checkbox" onchange="completeTodo(event)" {% if todo.completed %} checked {% endif %}/>
+                    <li class="list-group-item bg-transparent" id="{{ todo.id }}">
+                        <input class="mr-2" data-id="{{ todo.id }}" type="checkbox" onchange="completeTodo(event)" {% if todo.completed %} checked {% endif %}/>
                         {{- todo.description -}}
-                        <button id="todo-delete" data-id="{{ todo.id }}" onclick="deleteTodo(event)">&cross;</button>
+                        <button type="button" class="close text-red" aria-label="Close" id="todo-delete" data-id="{{ todo.id }}" onclick="deleteTodo(event)">
+                            <span aria-hidden="true">&cross;</span>
+                        </button>
                     </li>
                     {% endfor %}
-                </ul>
+                </div>
             </div>
         </div>
-        
+        <!-- Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Oops, something went wrong!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                No worries, our specialists already working on this. Close the window and try to refresh the page.
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Report</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <footer class="py-3 bg-dark-greyed text-center">
+            <div class="container">
+                <ul class="list-inline mb-2">
+                    <li class="list-inline-item mr-4">
+                        <a class="link-icon-danger" href="https://www.linkedin.com/in/yuriy-jurayev" title="LinkedIn" target="_blank" rel="external noopener noreferrer">
+                            <i class="fab fa-linkedin fa-3x"></i>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="link-icon-danger" href="https://github.com/jurayev" title="GitHub" target="_blank" rel="external noopener noreferrer">
+                            <i class="fab fa-github-square fa-3x"></i>
+                        </a>
+                    </li>
+                </ul>
+                <p class="mb-0 text-white">Copyright &copy; Yuriy Jurayev 2020</p>
+            </div>
+        </footer>
+        <script type="text/javascript" src="https://code.iconify.design/1/1.0.3/iconify.min.js"></script>
+        <!-- JS, Popper.js, and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
         <script src="{{url_for('static', filename='index.js')}}"></script>
     </body>
 </html>

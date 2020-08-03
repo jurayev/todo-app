@@ -2,7 +2,7 @@ function createTodo(e) {
     e.preventDefault();
     let url = window.location.href.split('/');
     const list_id = Number(url[url.length - 1]);
-    const descInput = document.getElementById('todos-description');
+    const descInput = document.querySelector('#todos-description');
     const description = descInput.value;
     // Clear user input on submit
     descInput.value = '';
@@ -24,23 +24,23 @@ function createTodo(e) {
         .catch((error) => {
             console.log("ERROR:", error);
             // Show errors
-            document.getElementById('error').className = '';
+            $('#errorModal').modal('show');
         })
 
 }
 
 function deleteTodo(e) {
     console.log('Event:', e)
-    fetch(`/todos/${e.target.dataset.id}/delete`, {method: 'DELETE'})
+    const todoID = e.currentTarget.dataset.id
+    fetch(`/todos/${todoID}/delete`, {method: 'DELETE'})
     .then(response => response.json())
     .then(data => {
         console.log("SUCCESS:", data);
-        document.querySelector(`[id="todos"] [id="${e.target.dataset.id}"]`).remove();
-        document.getElementById("error").className = 'hidden';
+        document.querySelector(`#todos [id="${todoID}"]`).remove();
     })
     .catch((error) => {
         console.log("ERROR:", error);
-        document.getElementById("error").className = '';
+        $('#errorModal').modal('show');
     })
 }
 
@@ -58,50 +58,35 @@ function completeTodo(e) {
     .then(response => response.json())
     .then(data => {
         console.log("SUCCESS:", data);
-        const checkbox = document.querySelector(`[id='lists'] [id='${data.list_id}'] input`);
+        const checkbox = document.querySelector(`#lists [id='${data.list_id}'] input`);
         if (data.are_all_completed == true) {
             checkbox.checked = true;
         } else {
             checkbox.checked = false;
         }
-        document.getElementById("error").className = 'hidden';
     })
     .catch((error) => {
         console.log("ERROR:", error);
-        document.getElementById('error').className = '';
+        $('#errorModal').modal('show');
     })
 
 }
 
 function renderNewTodo(data) {
     // Add a new to do record
-    let li = document.createElement('li');
-    li.id = data.id;
-
-    let checkbox = document.createElement('input');
-    checkbox.className = 'check';
-    checkbox.setAttribute('data-id', data.id);
-    checkbox.type = 'checkbox';
-    li.appendChild(checkbox);
-    
-    let deleteBtn = document.createElement('button');
-    deleteBtn.id = 'todo-delete';
-    deleteBtn.setAttribute('data-id', data.id);
-    deleteBtn.innerHTML += '&cross;';
-    li.appendChild(deleteBtn);
-
-    li.innerHTML += data.description;
-    document.getElementById("todos").appendChild(li);
-    // Add event listeners
-    document.querySelector(`li[id='${data.id}'] input`).addEventListener('change', (e) => completeTodo(e));
-    document.querySelector(`li[id='${data.id}'] button`).addEventListener('click', (e) => deleteTodo(e));
-    // Hide errors
-    document.getElementById("error").className = 'hidden';
+    const li = `<li class="list-group-item bg-transparent" id="${data.id}">
+        <input class="mr-2" data-id="${data.id}" type="checkbox" onchange="completeTodo(event)"/>
+        ${data.description}
+        <button type="button" class="close text-red" aria-label="Close" id="todo-delete" data-id="${data.id}" onclick="deleteTodo(event)">
+            <span aria-hidden="true">&cross;</span>
+        </button>
+    </li>`
+    document.querySelector("#todos").innerHTML += li;
 }
 
 function createList(e) {
     e.preventDefault();
-    const input = document.getElementById('list-description');
+    const input = document.querySelector('#list-description');
     const name = input.value;
     // Clear user input on submit
     input.value = '';
@@ -122,24 +107,24 @@ function createList(e) {
         .catch((error) => {
             console.log("ERROR:", error);
             // Show errors
-            document.getElementById('error').className = '';
+            $('#errorModal').modal('show');
         })
 
 }
 
 function deleteList(e) {
     console.log('Event:', e)
-    fetch(`/lists/${e.target.dataset.id}/delete`, {method: 'DELETE'})
+    const todoID = e.currentTarget.dataset.id
+    fetch(`/lists/${todoID}/delete`, {method: 'DELETE'})
     .then(response => response.json())
     .then(data => {
         console.log("SUCCESS:", data);
-        document.querySelector(`[id="lists"] [id="${e.target.dataset.id}"]`).remove();
-        document.getElementById("error").className = 'hidden';
+        document.querySelector(`#lists [id="${todoID}"]`).remove();
         window.location = "/";
     })
     .catch((error) => {
         console.log("ERROR:", error);
-        document.getElementById("error").className = '';
+        $('#errorModal').modal('show');
     })
 }
 
@@ -161,7 +146,7 @@ function completeList(e) {
         // SET/UNSET all todos
         if (window.location.href.includes(`lists/${list_id}`)) {
             for (let todo_id of data.todos) {
-                const checkbox = document.querySelector(`ul[id='todos'] li[id='${todo_id}'] input`);
+                const checkbox = document.querySelector(`#todos li[id='${todo_id}'] input`);
                 if (data.completed == true) {
                     checkbox.checked = true;
                 } else {
@@ -169,42 +154,27 @@ function completeList(e) {
                 }
             }
         }
-        document.getElementById("error").className = 'hidden';
     })
     .catch((error) => {
         console.log("ERROR:", error);
-        document.getElementById('error').className = '';
+        $('#errorModal').modal('show');
     })
 
 }
 
 function renderNewList(data) {
     // Add a new to do record
-    let li = document.createElement('li');
-    li.id = data.id;
-
-    let deleteBtn = document.createElement('button');
-    deleteBtn.id = 'list-delete';
-    deleteBtn.setAttribute('data-id', data.id);
-    deleteBtn.innerHTML += '&cross;';
-    li.appendChild(deleteBtn);
-
-    let checkbox = document.createElement('input');
-    checkbox.className = 'check';
-    checkbox.type = 'checkbox';
-    checkbox.setAttribute('data-id', data.id);
-    li.appendChild(checkbox);
-
-    li.innerHTML += `<a href="/lists/${data.id}">  ${data.name}  </a>`;
-    document.getElementById("lists").appendChild(li);
-    // Add event listeners
-    document.querySelector(`ul[id='lists'] li[id='${data.id}'] input`).addEventListener('change', (e) => completeList(e));
-    document.querySelector(`ul[id='lists'] li[id='${data.id}'] button`).addEventListener('click', (e) => deleteList(e));
-    // Hide errors
-    document.getElementById("error").className = 'hidden';
+    const li = `<li class="list-group-item bg-transparent" id="${data.id}">
+        <input class="mr-2" data-id="${data.id}" type="checkbox" onchange="completeList(event)"/>
+        <a class="text-dark text-decoration-none hover_blue" href="/lists/${data.id}">${data.name}</a>
+        <button type="button" class="close text-red" aria-label="Close" id="list-delete" data-id="${data.id}" onclick="deleteList(event)">
+            <span aria-hidden="true">&cross;</span>
+        </button>
+    </li>`
+    document.querySelector("#lists").innerHTML += li;
     // Redirect to the new list
     window.location = `/lists/${data.id}`;
 }
 
-document.getElementById('todos-form').addEventListener('submit', (e) => createTodo(e));
-document.getElementById('lists-form').addEventListener('submit', (e) => createList(e));
+document.querySelector('#todos-form').addEventListener('submit', (e) => createTodo(e));
+document.querySelector('#lists-form').addEventListener('submit', (e) => createList(e));
