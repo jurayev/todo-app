@@ -1,10 +1,7 @@
 # TODO BOARD
-Full-Stack TODO application. Add your todo task, save as a specific category, and enjoy. Built with Python3+, Flask, SQAlchemy, PostgresSQL, MVC, Bootstrap/HTML/CSS
+Full-Stack TODO application. Add your todo task, save as a specific category, and enjoy. 
 
-## Run application
-`$ pip3 install -r requirements.txt`
-`$ FLASK_APP=app.py FLASK_DEBUG=true flask run`
-`$ python3 app.py`
+Built with Python3+, Flask, SQAlchemy, PostgresSQL, MVC, Bootstrap/HTML/CSS
 
 ## Live Demo
 
@@ -57,14 +54,19 @@ When an error occures either on Front End or Back-End part a user is notified wi
 
 ### Execution
 1. Run application: 
+
    `$ FLASK_APP=app.py FLASK_DEBUG=true flask run`
+   
    or
+   
    `$ python3 app.py`
    
 2. Navigate to:
+
    `localhost:5000`
    
 3. Stop application: 
+
    `ctrl + c`
 
 ## Roadmap
