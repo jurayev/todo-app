@@ -74,6 +74,7 @@ When an error occures either on Front End or Back-End part a user is notified wi
 Future TODOs:
 * Possibility to update a record
 * Add geeting and basic usage modal window
+* Ability to create an account, sign up and login pages
 * Add unit tests
 
 ## Contributing
