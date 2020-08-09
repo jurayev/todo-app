@@ -1,7 +1,9 @@
 # TODO BOARD
 Full-Stack TODO application. Add your todo task, save as a specific category, and enjoy. 
 
-Built with Python3+, Flask, SQAlchemy, PostgresSQL, MVC, Bootstrap/HTML/CSS
+Built with Python3+, Flask, SQAlchemy, PostgresSQL, MVC, Bootstrap/HTML/CSS.
+
+All backend code base follows [PEP8 style guidelines.](https://www.python.org/dev/peps/pep-0008)
 
 ## Live Demo
 
